@@ -9,6 +9,9 @@ Data to pull
 4. rating
 5. total number of reviews (if they have it)
 
+To do:
+- code to clean up text file (in separate utils.py)
+- code to write results to csv file
 """
 
 import io
