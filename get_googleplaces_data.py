@@ -77,8 +77,8 @@ if __name__ == '__main__':
     PATH = "/Users/palermospenano/Desktop/Dropbox/temporary/limin_py/googleplaces_get_data/"
     in_csv = "unique_restaurants_for_Google.csv"
 
-    in_start = 60
-    in_end = 63
+    in_start = 0
+    in_end = 200
     out_csv = "{2}data/gp_start{0}_end{1}.csv".format(in_start, in_end, PATH)
     ################################################################################
 
