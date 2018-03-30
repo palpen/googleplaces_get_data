@@ -1,4 +1,7 @@
 """
+This script takes a string containing restaurant name and address and returns info
+on rating and price level using the Google Places Search API
+
 Google Places Search API documentation
 - https://developers.google.com/places/web-service/search
 
@@ -8,10 +11,6 @@ Data to pull
 3. Url
 4. rating
 5. total number of reviews (if they have it)
-
-To do:
-- code to clean up text file (in separate utils.py)
-- code to write results to csv file
 """
 
 import io
@@ -21,8 +20,6 @@ import pandas as pd
 import re
 import csv
 import numpy as np
-
-import pprint as pp
 
 
 def prepare_search_query(restaurant_list, restaurant_id_col='uid_rest_gl', restaurant_name_col='location_name'):
@@ -67,6 +64,12 @@ def make_http_url(textsearch, api_key):
     return "https://maps.googleapis.com/maps/api/place/textsearch/json?query={0}&key={1}".format(textsearch, api_key)
 
 
+def is_key_in_json(key, json):
+    if key in json:
+        return json[key]
+    return np.NaN
+
+
 if __name__ == '__main__':
 
     ################################################################################
@@ -74,8 +77,8 @@ if __name__ == '__main__':
     PATH = "/Users/palermospenano/Desktop/Dropbox/temporary/limin_py/googleplaces_get_data/"
     in_csv = "unique_restaurants_for_Google.csv"
 
-    in_start = 50
-    in_end = 100
+    in_start = 60
+    in_end = 63
     out_csv = "{2}data/gp_start{0}_end{1}.csv".format(in_start, in_end, PATH)
     ################################################################################
 
@@ -85,9 +88,6 @@ if __name__ == '__main__':
         api_key = creds['api_key']
 
     df_sq = prepare_search_query(f'{PATH}data/{in_csv}', restaurant_id_col='uid_rest_gl', restaurant_name_col='location_name')
-
-    print(df_sq.head())
-
 
     header = ['uid', 'search_query', 'name', 'result_address', 'rating', 'price_level']
 
@@ -111,25 +111,10 @@ if __name__ == '__main__':
 
             for r in results:
 
-                try:
-                    name = r['name']
-                except Exception:
-                    name = np.NaN
-
-                try:
-                    result_address = r['formatted_address']
-                except Exception:
-                    result_address = np.NaN
-
-                try:
-                    rating = r['rating']
-                except Exception:
-                    rating = np.NaN
-
-                try:
-                    price_level = r['price_level']
-                except Exception:
-                    price_level = np.NaN
+                name = is_key_in_json('name', r)
+                result_address = is_key_in_json('formatted_address', r)
+                rating = is_key_in_json('rating', r)
+                price_level = is_key_in_json('price_level', r)
 
                 data = [i, q, name, result_address, rating, price_level]
 
@@ -139,4 +124,3 @@ if __name__ == '__main__':
             print("")
 
             count += 1
-
