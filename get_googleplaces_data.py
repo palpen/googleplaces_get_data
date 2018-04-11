@@ -74,11 +74,12 @@ if __name__ == '__main__':
 
     ################################################################################
     # Palermo's path
-    PATH = "/Users/palermospenano/Desktop/Dropbox/temporary/limin_py/googleplaces_get_data/"
-    in_csv = "unique_restaurants_for_Google.csv"
+    PATH = "/Users/palermospenano/Desktop/Dropbox/temporary/limin_py/googleplaces_v2/googleplaces_get_data/"
+    in_csv = "unique_restaurants_for_Google.csv"  # list of restaurants to search
 
     in_start = 0
-    in_end = 200
+    in_end = 20
+
     out_csv = "{2}data/gp_start{0}_end{1}.csv".format(in_start, in_end, PATH)
     ################################################################################
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
     df_sq = prepare_search_query(f'{PATH}data/{in_csv}', restaurant_id_col='uid_rest_gl', restaurant_name_col='location_name')
 
-    header = ['uid', 'search_query', 'name', 'result_address', 'rating', 'price_level']
+    header = ['uid', 'search_query', 'name', 'result_address', 'rating', 'price_level', 'permanently_closed']
 
     with open(out_csv, 'w') as csvfile:
 
@@ -115,8 +116,9 @@ if __name__ == '__main__':
                 result_address = is_key_in_json('formatted_address', r)
                 rating = is_key_in_json('rating', r)
                 price_level = is_key_in_json('price_level', r)
+                perm_closed = is_key_in_json('permanently_closed', r)
 
-                data = [i, q, name, result_address, rating, price_level]
+                data = [i, q, name, result_address, rating, price_level, perm_closed]
 
                 writer.writerow(data)
 
